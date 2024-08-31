@@ -2,8 +2,8 @@
   {
       "payload": {
          "phrase": "food",
-         "category": "sports",
-         "time": "1"
+         "category": "3",
+         "time": "2"
       },
       "files": {
           "orders.xlsx": "orders.xlsx"

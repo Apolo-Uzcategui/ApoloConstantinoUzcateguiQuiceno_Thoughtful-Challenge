@@ -16,6 +16,33 @@ class search_config:
         category = work_item.get("category")
         months_back = int(work_item.get("months_back", 0))
         return cls(search_phrase, category, months_back)
+    
+"""
+Category options:
+1 - California
+2 - World and nation
+3 - Food
+4 - Business
+"""    
+categories = {
+    "1": "input[name='f0'][value='00000163-01e2-d9e5-adef-33e2984a0000']",
+    "2": "input[name='f0'][value='00000168-8694-d5d8-a76d-efddaf000000']",
+    "3": "input[name='f0'][value='00000168-8683-d2cb-a969-de8b247e0000']",
+    "4": "input[name='f0'][value='00000168-865c-d5d8-a76d-efddd6550000']",
+}
+
+"""
+Sorting options
+1 - California
+2 - World and nation
+3 - Food
+4 - Business
+"""    
+sorts = {
+    "1": "Relevance",
+    "2": "Newest",
+    "3": "Oldest"
+}
 
 @task
 def process_news():
@@ -25,9 +52,9 @@ def process_news():
 
     search_parameters = get_workitem()
     message = search_parameters["time"]
-    print(message)
 
     search_news(search_parameters)
+    open_article()
 
 def get_workitem():
     """
@@ -42,17 +69,22 @@ def get_workitem():
 def search_news(search_parameters):
     """
     We set the variables needed to crawl through the site.
+    Then, the variables of the search parameters are separated.
     The clicks and fills to get to the articles are executed.
+    The clicks necessary to configure the search are done.
     """
 
     news_portal = "https://www.latimes.com/"
     search_tab = ".xs-5\:h-6"
     search_text = "[name=q]"
     search_button = ".h-6\.25"
+    order_by = "select.select-input[name='s']"
 
+    #nth-child(1) li:nth-child(1) .checkbox-input-element:nth-child(1)
     phrase = search_parameters["phrase"]
-    category = ('input[name="f1"][value="8fd31d5a-5e1c-3306-9f27-6edc9b08423e"]')#search_parameters["category"]
-    #time = #search_parameters["phrase"]
+    category = categories[search_parameters["category"]]
+    time = sorts[search_parameters["time"]]
+    article_type = ('input[name="f1"][value="8fd31d5a-5e1c-3306-9f27-6edc9b08423e"]')
 
     browser.goto(news_portal)
     page = browser.page()
@@ -62,21 +94,22 @@ def search_news(search_parameters):
     page.fill(search_text, phrase)
     page.click(search_button)
     page.wait_for_timeout(2000) 
-
     reload_page()
 
     page.click(category)
-    #page.wait_for_timeout(500) 
-    
-    browser.page().reload()
+    page.click(article_type)
+    page.select_option(order_by, time)
     page.wait_for_timeout(500)
-    first_article = "li:nth-child(1) .promo-title"
-    #first_li_element = page.locator(first_li_xpath)
-    print(first_article)
-    #first_li_element.wait_for(state="visible")
-    page.click(first_article)
-    page.wait_for_timeout(10000) 
+    reload_page()
 
 def reload_page():
     page = browser.page()
     browser.page().reload()
+
+def open_article():
+    page = browser.page()
+
+    first_article = "li:nth-child(1) h3.promo-title a"
+
+    page.click(first_article)
+    page.wait_for_timeout(10000) 
