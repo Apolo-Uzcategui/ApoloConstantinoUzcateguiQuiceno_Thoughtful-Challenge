@@ -112,4 +112,14 @@ def open_article():
     first_article = "li:nth-child(1) h3.promo-title a"
 
     page.click(first_article)
+    page.wait_for_timeout(500) 
+  
+    title = page.locator(".headline").inner_text()
+    date = page.locator(".published-date-day").inner_text()
+    author = page.locator(".authors .author-name .link").inner_text()
+    
+    print(title)
+    print(date)
+    print(author)
+ 
     page.wait_for_timeout(10000) 
