@@ -123,7 +123,7 @@ def get_workitem():
     logger.info("The 'get_workitem' process started.")
 
     for item in workitems.inputs:
-        search_parameters = item['payload']
+        search_parameters = item.payload
 
     return search_parameters
 
