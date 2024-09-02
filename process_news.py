@@ -55,6 +55,11 @@ def process_news():
 
     search_news(search_parameters)
     open_article()
+    title, date, author, link =  get_article_data()
+    print(title)
+    print(date)
+    print(author)
+    print(link)
 
 def get_workitem():
     """
@@ -113,13 +118,17 @@ def open_article():
 
     page.click(first_article)
     page.wait_for_timeout(500) 
-  
+
+def get_article_data():
+    page = browser.page()
     title = page.locator(".headline").inner_text()
     date = page.locator(".published-date-day").inner_text()
     author = page.locator(".authors .author-name .link").inner_text()
-    
-    print(title)
-    print(date)
-    print(author)
- 
+    img = page.locator(".page-lead-media .figure img[src]").get_attribute("src")
+    img_desc =page.locator(".page-lead-media .figure .image").get_attribute("alt")
+    link = page.url
+    print(img)
+    print(img_desc)
     page.wait_for_timeout(10000) 
+
+    return title, date, author, link
