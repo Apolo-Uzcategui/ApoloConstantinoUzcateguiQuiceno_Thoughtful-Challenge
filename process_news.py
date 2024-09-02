@@ -107,7 +107,7 @@ def process_news():
     logger.info("Browser slowmo set to 500.")
 
     search_parameters = get_workitem()
-
+    print(search_parameters)
     search_news(search_parameters)
     open_article()
     article = get_article_data()
@@ -123,7 +123,7 @@ def get_workitem():
     logger.info("The 'get_workitem' process started.")
 
     for item in workitems.inputs:
-        search_parameters = item.payload
+        search_parameters = item['payload']
 
     return search_parameters
 
